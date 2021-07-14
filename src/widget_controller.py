@@ -54,9 +54,9 @@ def get_widget_by_id(id):
     """
     conn = create_connection()
     conn.row_factory = sqlite3.Row
-    sql = ''' SELECT * FROM widgets WHERE id = ?'''
+    sql = ''' SELECT * FROM widgets WHERE id = {}'''.format(id)
     cur = conn.cursor()
-    cur.execute(sql, (id))
+    cur.execute(sql)
     
     row = cur.fetchone()
     
@@ -71,12 +71,9 @@ def update_widget(id, name, updated_date):
     :return:
     """
     conn = create_connection()
-    sql = ''' UPDATE widgets
-              SET name = ? ,
-                  updated_date = ? 
-              WHERE id = ?'''
+    sql = ''' UPDATE widgets set name="{}", updated_date="{}" where id={} '''.format(name,updated_date,id)
     cur = conn.cursor()
-    cur.execute(sql, (id, name, updated_date))
+    cur.execute(sql)
     conn.commit()
 
 
@@ -88,7 +85,7 @@ def delete_widget(id):
     :return:
     """
     conn = create_connection()
-    sql = 'DELETE FROM widgets WHERE id=?'
+    sql = '''DELETE FROM widgets WHERE id={}'''.format(id)
     cur = conn.cursor()
-    cur.execute(sql, (id))
+    cur.execute(sql) 
     conn.commit()

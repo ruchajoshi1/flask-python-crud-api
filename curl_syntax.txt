@@ -1,11 +1,14 @@
 curl -H "Content-Type: application/json" --request POST --data @new_rec.json http://localhost:8000/widget-create
-curl -X POST -H "Content-Type: application/json" --data @new_rec.json http://localhost:8000/widget-create
+
 curl -X GET http://localhost:8000/widgets
+curl -X POST -H "Content-Type: application/json" --data @new_rec.json http://localhost:8000/widget
 
 curl -X GET http://localhost:8000/widget/4
 
+curl -X PUT -H "Content-Type: application/json" --data @update_rec.json http://localhost:8000/widget
 
-curl -X DELETE http://localhost:8000/widget-delete/13
+
+curl -X DELETE http://localhost:8000/widget/12
 
 curl -X PUT -H "Content-Type: application/json" --data @new_rec.json http://localhost:8000/widget-update
 
