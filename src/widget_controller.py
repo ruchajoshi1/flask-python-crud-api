@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
+'''
+    This is widget controller where CRUD methods are defined
+'''
 
 import sqlite3
 from sqlite_connection import create_connection
 
+
+# create widget - post request
 def create_widget(name, number_of_parts, created_date, updated_date):
     """
     Create a new widget into the widgets table
-    :param name:
-    :param number_of_parts:
-    :param created_date:
-    :param updated_date:
-    :return: None
+    :param: name:
+    :param: number_of_parts:
+    :param: created_date:
+    :param: updated_date:
+    :return: return_dict:
     """
     conn = create_connection()
     sql = ''' INSERT INTO widgets(name,number_of_parts,created_date,updated_date)
@@ -18,7 +23,6 @@ def create_widget(name, number_of_parts, created_date, updated_date):
     cur = conn.cursor()
     cur.execute(sql, (name, number_of_parts, created_date, updated_date))
     conn.commit()
-    #return(cur.rowcount)
     return_dict = {}
     if (cur.rowcount > 0):
         return_dict['Status'] = "Success"
@@ -28,17 +32,15 @@ def create_widget(name, number_of_parts, created_date, updated_date):
         return_dict['Status'] = "Error"
         return_dict['Output'] = "No records inserted"
         return_dict['id'] = ''
-    return(return_dict)
-        
+    return(return_dict)        
         
     
-
-
+# get method  - to retrieve all widgets
 def select_all_widgets():
     """
     Query all rows in the widgets table
     :param:
-    :return:
+    :return: return_dict
     """
     conn = create_connection()
     conn.row_factory = sqlite3.Row
@@ -58,19 +60,18 @@ def select_all_widgets():
     return return_dict
 
     
-        
+# get method - get widget by id        
 def get_widget_by_id(id):
     """
     Query widgets table by id and return a widget
     :param id: 
-    :return :
+    :return: return_dict
     """
     conn = create_connection()
     conn.row_factory = sqlite3.Row
     sql = ''' SELECT * FROM widgets WHERE id = {}'''.format(id)
     cur = conn.cursor()
-    cur.execute(sql)
-    
+    cur.execute(sql)    
     row = cur.fetchone()
     return_dict = {}
     if row==None:
@@ -79,15 +80,18 @@ def get_widget_by_id(id):
     else:
         return_dict['Status'] = 'Success'
         return_dict['Output'] = dict(row)
+    
     return return_dict
     
 
+# put method - update widget by id
 def update_widget(id, name, updated_date):
     """
     update name, and updated_date of a widget in widgets table
-    :param conn:
-    :param widget:
-    :return:
+    :param id:
+    :param: name:
+    :param: updated_date:
+    :return: num_rows:
     """
     conn = create_connection()
     sql = ''' UPDATE widgets set name="{}", updated_date="{}" where id={} '''.format(name,updated_date,id)
@@ -95,15 +99,16 @@ def update_widget(id, name, updated_date):
     cur.execute(sql)
     conn.commit()
     num_rows = cur.rowcount
+    
     return num_rows
 
 
+# delete method - delete widget by id
 def delete_widget(id):
     """
     Delete a widget by widget id
-    :param conn:  Connection to the SQLite database
-    :param id: id of the widget
-    :return:
+    :param: id
+    :return: num_rows
     """
     conn = create_connection()
     sql = '''DELETE FROM widgets WHERE id={}'''.format(id)
@@ -111,5 +116,6 @@ def delete_widget(id):
     cur.execute(sql) 
     conn.commit()
     num_rows = cur.rowcount
+    
     return num_rows
 
