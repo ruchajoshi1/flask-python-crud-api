@@ -6,7 +6,7 @@ curl -X POST -H "Content-Type: application/json" --data @new_rec.json http://loc
 curl -X GET http://localhost:8000/widget/4
 
 curl -X PUT -H "Content-Type: application/json" --data @update_rec.json http://localhost:8000/widget
-
+curl -X PUT -H "Content-Type: application/json" --data @update_rec2.json http://localhost:8000/widget
 
 curl -X DELETE http://localhost:8000/widget/12
 

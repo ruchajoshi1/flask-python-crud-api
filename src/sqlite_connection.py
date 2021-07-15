@@ -3,8 +3,8 @@
 import sqlite3
 from sqlite3 import Error
 
-DATABASE_NAME = r"C:\Users\mvjos\AWeber_Assignment\db\pythonsqlite.db"
-
+#DATABASE_NAME = r"C:\Users\mvjos\AWeber_Assignment\db\pythonsqlite.db"
+DATABASE_NAME = r"../db/pythonsqlite.db"
 
 def create_connection():
     """ create a database connection to a SQLite database """

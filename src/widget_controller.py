@@ -18,8 +18,19 @@ def create_widget(name, number_of_parts, created_date, updated_date):
     cur = conn.cursor()
     cur.execute(sql, (name, number_of_parts, created_date, updated_date))
     conn.commit()
-    
-    #return cur.lastrowid
+    #return(cur.rowcount)
+    return_dict = {}
+    if (cur.rowcount > 0):
+        return_dict['Status'] = "Success"
+        return_dict['Output'] = "Record inserted"
+        return_dict['id'] = cur.lastrowid
+    else:
+        return_dict['Status'] = "Error"
+        return_dict['Output'] = "No records inserted"
+        return_dict['id'] = ''
+    return(return_dict)
+        
+        
     
 
 
@@ -32,17 +43,19 @@ def select_all_widgets():
     conn = create_connection()
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    #cur.execute("SELECT * FROM widgets")
-
     rows = cur.execute("SELECT * FROM widgets").fetchall()
-    
     list_dict = []
+    return_dict = {}
+    if (rows is None) or len(rows) <= 0:
+        return_dict['Status'] = "Error"
+        return_dict['Output'] = "No rows returned from the database"
+    else:
+        for row in rows:
+            list_dict.append(dict(row))
+        return_dict['Status'] = 'Success'
+        return_dict['Output'] = list_dict
     
-    for row in rows:
-        #print(dict(row))
-        list_dict.append(dict(row))
-    
-    return list_dict
+    return return_dict
 
     
         
@@ -59,8 +72,14 @@ def get_widget_by_id(id):
     cur.execute(sql)
     
     row = cur.fetchone()
-    
-    return dict(row)
+    return_dict = {}
+    if row==None:
+        return_dict['Status'] = "Error"
+        return_dict['Output'] = 'No data returned while searching for id {}'.format(id)
+    else:
+        return_dict['Status'] = 'Success'
+        return_dict['Output'] = dict(row)
+    return return_dict
     
 
 def update_widget(id, name, updated_date):
@@ -75,6 +94,8 @@ def update_widget(id, name, updated_date):
     cur = conn.cursor()
     cur.execute(sql)
     conn.commit()
+    num_rows = cur.rowcount
+    return num_rows
 
 
 def delete_widget(id):
@@ -89,3 +110,6 @@ def delete_widget(id):
     cur = conn.cursor()
     cur.execute(sql) 
     conn.commit()
+    num_rows = cur.rowcount
+    return num_rows
+

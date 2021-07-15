@@ -13,24 +13,22 @@ app.config['JSON_SORT_KEYS'] = False
 @app.route('/widgets', methods=["GET"])
 def get_all_widgets():
     widgets = widget_controller.select_all_widgets()
-    #print(jsonify(widgets))
     return jsonify(widgets)
-    #json_string = json.dumps([ob.__dict__ for ob in widgets])
-    #return json_string
+
 
 @app.route("/widget", methods=["GET", "POST"])
 def insert_widget():
     if request.method == 'POST':
         widget_details = request.get_json()
-        name = widget_details["name"]
-        number_of_parts = widget_details["number_of_parts"]
-        #name = request.form.get("name")
-        #number_of_parts = int(request.form.get("number_of_parts"))
-        created_date = date.today().strftime("%Y-%m-%d")
-        updated_date = created_date
-        widget_controller.create_widget(name, number_of_parts, created_date, updated_date)
-        
-        return "true"
+        name = widget_details.get("name")
+        number_of_parts = widget_details.get("number_of_parts")
+        if (name is None) or (number_of_parts is None):
+            return jsonify({'Status':'Error','Output':'Either name or number_of_parts is not specified in the json object'})
+        else:
+            created_date = date.today().strftime("%Y-%m-%d")
+            updated_date = created_date
+            return_dict = widget_controller.create_widget(name, number_of_parts, created_date, updated_date)
+            return jsonify(return_dict)
 
 
 @app.route("/widget", methods=["PUT"])
@@ -38,18 +36,29 @@ def update_widget():
     
     if request.method == 'PUT':
         widget_details = request.get_json()
-        id = widget_details["id"]
-        name = widget_details["name"]
-
-        updated_date = date.today().strftime("%Y-%m-%d")
-        #updated_date = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
-        widget_controller.update_widget(id, name, updated_date)
+        id = widget_details.get("id")
+        name = widget_details.get("name")
         
-        return "true"
+        if (id is None) or (name is None):
+            return jsonify({'Status':'Error','Output':'Either id or name is not specified in the json object'})
+        else:
+            updated_date = date.today().strftime("%Y-%m-%d")
+            #updated_date = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
+            num_rows = widget_controller.update_widget(id, name, updated_date)
+            if num_rows > 0:
+                return jsonify({'Status':'Success', 'Output': 'Updated record for id {} '.format(id) })
+            else:
+                return jsonify({'Status':'Error', 'Output': 'No records found for id {}'.format(id)})
 
 @app.route("/widget/<id>", methods=["DELETE"])
 def delete_widget(id):
-    widget_controller.delete_widget(id)
+    num_rows=widget_controller.delete_widget(id)
+    if num_rows > 0:
+        return jsonify({'Status':'Success', 'Output': 'Deleted record for id {} '.format(id) })
+    else:
+        return jsonify({'Status':'Error', 'Output': 'No records found for id {}'.format(id)})
+
+    
     return ''' Deleted record {}'''.format(id)
 
 
